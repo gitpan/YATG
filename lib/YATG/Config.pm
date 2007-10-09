@@ -64,22 +64,24 @@ file must parse out to an anonymous hash of hashes, as in the example.
 Let's first consider the C<yatg> key/value, which is the main configuration
 area.
 
-=head2 C<oids>
+=head2 oids
 
-Again this is a hash, with keys being the Leaf Name of an SNMP OID. This tells
+This is a hash, with keys being the Leaf Name of an SNMP OID. This tells
 C<yatg_updater> the list of OIDs which you would like gathering from each
 network device. The value for each leaf name key is a list of magic words
 which tell C<yatg_updater> whether to get the OID, and what to do with the
 results. Some of the magic words are mutually exclusive.
 
- # example key and "magic words" value
- ifOperStatus: [disk, ifindex]
+ # example key and "magic words" list value
+ yatg:
+     oids:
+         ifOperStatus: [disk, ifindex]
 
 =head3 Storage
 
-These are the storage methods for the resuls, and an OID without one of these
+These are the storage methods for the results, and an OID without one of these
 magic words will be ignored. You should only specify one of these for each
-leaf name.
+leaf name (as in the example above).
 
 =over 4
 
@@ -103,10 +105,10 @@ course. For more information see L<YATG::Store::Memcached>.
 
 =item C<rpc>
 
-This is merely an extension to the C<disk> storage module which allows
+This is merely an extension to the Disk storage module which allows
 C<yatg_updater> to use disk on another machine. You can think of it as an
-RPC-based alternative to network mounting of a filesystem. On the remote host,
-the C<disk> module is still used for storage. See L<YATG::Store::RPC> for more
+RPC-based alternative to network mounting a filesystem. On the remote host,
+the Disk module is then used for storage. See L<YATG::Store::RPC> for more
 details.
 
 =back
@@ -116,10 +118,19 @@ details.
 Although C<yatg_updater> will happily poll single value or plain indexed OIDs,
 you can give it a hint that there is an interface-indexed OID in use.
 
-In that case, C<yatg_updater> will make sure  that C<IfDescr> and
+In that case, C<yatg_updater> will make sure that C<IfDescr> and
 C<IfAdminStatus> are retrieved from the device, and results will be keyed by
 human-friendly names (e.g. C<FastEthernet2/1>) rather than SNMP interface
 indexes (e.g. C<10101>).
+
+Furthermore, only results for "interesting" interfaces will be stored. This is
+defined as interfaces which are administratively configured to the "up" state,
+and whose name does not match an exclusion list (various private
+sub-interfaces, which are uninteresting). This measure will save you time when
+storing results to disk as you only save what is interesting. If you store
+results for a port, then shut it down and some time later start it up again,
+the results file will be padded out for the period of shut-down time and
+appended with the new results.
 
 Being indexed by interface is something C<yatg_updater> cannot work out for
 itself for an OID, so provide the C<ifindex> magic word to enable this
@@ -137,38 +148,39 @@ appear more than once:
 
 =over 4
 
-=item C<< 192.2.1.10 >> or C<192.1.1.0/24>
+=item C<192.2.1.10> or C<192.1.1.0/24>
 
-Any IP address or IP subnet in these forms will be taken as a restriction
-placed upon the cached list of device IPs. If the IP is not in the cached list
-already, then it will not be polled. As soon as you use a magic word like
-this, then IPs in the cached list not mentioned explicity will also be
-excluded from a poll on this leaf name.
+Any IP address or IP subnet will be taken as a restriction placed upon the
+default list of device IPs, for this OID only.
 
-In case it is not clear, an IP address and a subnet are no different - a
-C</32> subnet mask is assumed in the case of an IP address.
+Not providing an explicit IP address or IP subnet means the OID will be polled
+on all devices in the default list.
 
 =item C<!192.2.1.10> or C<!192.1.1.0/24>
 
 Using an exclamation mark at the head of the IP address introduces an
-exclusion filter upon the cached list of IP addresses. This will override an
-explicit mention of an address (such as in the note, above). These IP
-addresses will then not be polled for the associated leaf name.
+exclusion filter upon the cached list of IP addresses.
 
-In case it is not clear, an IP address and a subnet are no different - a
-C</32> subnet mask is assumed in the case of an IP address.
+This prevents the OID from being checked on the given devices, even if the
+device IP is also given in a magic word, as above.
 
 =back
 
-=head2 C<communities>
+In case it is not clear, an IP address and an IP subnet are no different - a
+C</32> subnet mask is assumed in the case of an IP address.
+
+=head2 communities
 
 Provide a list of SNMP community strings to the system using this parameter.
 For each device, at startup, C<yatg_updater> will work out which community to
 use and cache that for subsequent SNMP polling. For example:
 
- communities: [public, anotherone]
+ yatg:
+     communities: [public, anotherone]
 
-=head2 C<dbi_connect> and the list of devices
+The default value for this is C<[ public ]>.
+
+=head2 dbi_connect and the list of devices
 
 At start-up, C<yatg_updater> needs to be given a list of device IPs which it
 should poll with SNMP. We designed this system to work with NetDisco (a
@@ -182,13 +194,14 @@ the C<dbi_connect> value in the example configuration file.
 If you want to use a different SQL query, add a new key and value to the
 configuration like so (this is an example, of course!):
 
- dbi_ip_query: 'select ip from device;'
+ yatg:
+     dbi_ip_query: 'select ip from device;'
 
 The query must return a single list of IPs. If you don't have a back-end
 database with such information, then install SQLite and quickly set one up.
 It's good practice for asset management, if nothing else.
 
-=head2 C<mibdirs>
+=head2 mibdirs
 
 If you use NetDisco, and have the MIB files from that distribution installed
 in C</usr/share/netdisco/mibs/...> then you can probably ignore this as the
@@ -204,10 +217,11 @@ NetDisco MIBs as it is missing two MIB files.
 
 Here is an example in YAML:
 
- mibdirs:
-     ['/usr/share/netdisco/mibs/cisco',
-      '/usr/share/netdisco/mibs/rfc',
-      '/usr/share/netdisco/mibs/net-snmp']
+ yatg:
+     mibdirs:
+         ['/usr/share/netdisco/mibs/cisco',
+          '/usr/share/netdisco/mibs/rfc',
+          '/usr/share/netdisco/mibs/net-snmp']
 
 =head1 OPTIONAL CONFIGURATION
 

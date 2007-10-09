@@ -3,7 +3,7 @@
 use strict;
 use warnings FATAL => 'all';
 
-our $VERSION = '1.0300';
+our $VERSION = '1.0301';
 
 use YATG::SharedStorage;
 YATG::SharedStorage->factory(qw(cache results));
@@ -249,7 +249,7 @@ YATG - Fast SNMP data poller daemon, with storage and graphing
 
 =head1 VERSION
 
-This document refers to version 1.0300 of YATG
+This document refers to version 1.0301 of YATG
 
 =head1 DESCRIPTION
 
@@ -263,9 +263,9 @@ for you. We took the decision to generalize the code as much as possible, and
 release it, in the hope that other network systems administrators might find
 our solutions to these problems interesting, and maybe provide feedback.
 
-However, YATG is immenseley flexible and powerful. It can poll a large number
-of devices with thousands of ports in just a few seconds. The configuration is
-very simple, and the defaults sane (it's designed for sysadmins, after all).
+However, YATG is flexible and powerful. It can poll a large number of devices
+with thousands of ports in just a few seconds. The configuration is very
+simple, and the defaults sane (it's designed for sysadmins, after all).
 
 You can use YATG both for historical logging, such as traffic counters on
 ports, as well as short-term monitoring which might feed into, say, Nagios.
@@ -288,8 +288,8 @@ polls all devices, then stores results, again according to instructions in the
 configuration.
 
 If you have only the essential dependencies installed (see below) then you can
-only output results to C<STDOUT>. With other modules, you have more options
-such as local or remote disk, or memcached based storage.
+only output results to STDOUT. With other modules, you have more options such
+as local or remote disk, or memcached based storage.
 
 C<yatg_updater> will re-load all its configuration if given a HUP signal. If
 you run the daemon persistently (for example with C<daemontools>) then a cron
@@ -306,18 +306,18 @@ This is the main application, designed to be run persistently. It does not
 accept any input and only produces output when in debugging mode. It is a
 smart wrapper for the L<SNMP::Effective> module.
 
-=item C<YATG::Store> family of modules
+=item YATG::Store family of modules
 
 These are modules which take the SNMP poll results and store them to either
 local Disk, a Memcached server, or the disk on a remote networked server.
 
-=item C<YATG::Retrieve> family of modules
+=item YATG::Retrieve family of modules
 
 These are modules which read stored results back to you, for a given time
 window. The data can be retrieved from local Disk, a Memcached server, or the
 disk on a remote networked server.
 
-=item L<RPC::Serialized> handlers
+=item RPC::Serialized handlers
 
 If storing and/or retrieving on a remote networked server, it should run an
 instance of L<RPC::Serialized>, and these are the RPC Handlers for that server
@@ -357,6 +357,10 @@ To run the poller just once, set the C<YATG_SINGLE_RUN> environment variable
 to a true value. This is great for development. It makes C<yatg_updater> load
 its configuration, generate the device hints cache, sleep and then run just
 one poll cycle before exiting.
+
+For example:
+
+ YATG_DEBUG=1 YATG_SINGLE_RUN=1 /usr/bin/yatg_updater /etc/yatg.yml
 
 =head1 DEPENDENCIES
 
@@ -412,11 +416,11 @@ features such as data storage, graphing, and so on:
 
 =item L<SNMP::Effective>
 
-This system uses C<SNMP::Effective> at its core do the polling.
+This system uses SNMP::Effective at its core do the polling.
 
 =item L<RPC::Serialized>
 
-Store polled data on another server using C<RPC::Serialized>.
+Store polled data on another server using RPC::Serialized.
 
 =back
 

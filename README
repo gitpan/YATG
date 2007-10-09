@@ -2,7 +2,7 @@ NAME
     YATG - Fast SNMP data poller daemon, with storage and graphing
 
 VERSION
-    This document refers to version 1.0300 of YATG
+    This document refers to version 1.0301 of YATG
 
 DESCRIPTION
     YATG is an application which is intended to be run persistently. At
@@ -16,10 +16,10 @@ DESCRIPTION
     administrators might find our solutions to these problems interesting,
     and maybe provide feedback.
 
-    However, YATG is immenseley flexible and powerful. It can poll a large
-    number of devices with thousands of ports in just a few seconds. The
-    configuration is very simple, and the defaults sane (it's designed for
-    sysadmins, after all).
+    However, YATG is flexible and powerful. It can poll a large number of
+    devices with thousands of ports in just a few seconds. The configuration
+    is very simple, and the defaults sane (it's designed for sysadmins,
+    after all).
 
     You can use YATG both for historical logging, such as traffic counters
     on ports, as well as short-term monitoring which might feed into, say,
@@ -43,8 +43,8 @@ How Does It Work?
     instructions in the configuration.
 
     If you have only the essential dependencies installed (see below) then
-    you can only output results to "STDOUT". With other modules, you have
-    more options such as local or remote disk, or memcached based storage.
+    you can only output results to STDOUT. With other modules, you have more
+    options such as local or remote disk, or memcached based storage.
 
     "yatg_updater" will re-load all its configuration if given a HUP signal.
     If you run the daemon persistently (for example with "daemontools") then
@@ -57,12 +57,12 @@ What's in this distribution
         does not accept any input and only produces output when in debugging
         mode. It is a smart wrapper for the SNMP::Effective module.
 
-    "YATG::Store" family of modules
+    YATG::Store family of modules
         These are modules which take the SNMP poll results and store them to
         either local Disk, a Memcached server, or the disk on a remote
         networked server.
 
-    "YATG::Retrieve" family of modules
+    YATG::Retrieve family of modules
         These are modules which read stored results back to you, for a given
         time window. The data can be retrieved from local Disk, a Memcached
         server, or the disk on a remote networked server.
@@ -103,6 +103,10 @@ LOGGING and TESTING
     "yatg_updater" load its configuration, generate the device hints cache,
     sleep and then run just one poll cycle before exiting.
 
+    For example:
+
+     YATG_DEBUG=1 YATG_SINGLE_RUN=1 /usr/bin/yatg_updater /etc/yatg.yml
+
 DEPENDENCIES
     The following modules are dependencies of the YATG system, in addition
     to the standard contents of the Perl distribution itself:
@@ -130,10 +134,10 @@ DEPENDENCIES
 
 SEE ALSO
     SNMP::Effective
-        This system uses "SNMP::Effective" at its core do the polling.
+        This system uses SNMP::Effective at its core do the polling.
 
     RPC::Serialized
-        Store polled data on another server using "RPC::Serialized".
+        Store polled data on another server using RPC::Serialized.
 
 AUTHOR
     Oliver Gorwits "<oliver.gorwits@oucs.ox.ac.uk>"

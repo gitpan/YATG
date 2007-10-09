@@ -27,13 +27,9 @@ to C<YATG::Store::Disk::store()> verbatim.
 
 =head1 INSTALLATION
 
-You'll need to run an L<RPC::Serialized> server, of course, and configure it
-to serve this handler. There are files in the C<examples/> folder of this
-distribution to help with that:
-
-=over 4
-
-=item RPC::Serialized configuration, C<server.yml>
+You'll need to run an RPC::Serialized server, of course, and configure it to
+serve this handler. There are files in the C<examples/> folder of this
+distribution to help with that, e.g. C<rpc-serialized.server.yml>:
 
  ---
  # configuration for rpc-serialized server with YATG handlers
@@ -46,12 +42,11 @@ distribution to help with that:
      user: daemon
      group: daemon
 
-=back
 
-You should head over to the L<RPC::Serialized> documentation to learn how to
-set that up. We use a pre-forking L<Net::Server> based implementation to
-receive port traffic data and store to disk, then serve it back out to CGI on
-a web server.
+You should head over to the RPC::Serialized documentation to learn how to set
+that up. We use a pre-forking L<Net::Server> based implementation to receive
+port traffic data and store to disk, then serve it back out to CGI on a web
+server.
 
 =head1 SEE ALSO
 

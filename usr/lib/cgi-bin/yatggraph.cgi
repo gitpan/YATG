@@ -191,7 +191,7 @@ __END__
 
 =head1 NAME
 
-YATG CGI - CGI to display graphs of YATG polled port traffic data
+yatggraph.cgi - CGI to make PNG of YATG polled port traffic data
 
 =head1 IMPORTANT NOTE
 

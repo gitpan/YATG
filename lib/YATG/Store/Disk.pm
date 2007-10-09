@@ -77,8 +77,8 @@ YATG::Store::Disk - Back-end module to store polled data to disk
 =head1 DESCRIPTION
 
 This module implements part of a callback handler used to store SNMP data to
-disk quickly, although not necessarily compactly. Disk is cheaper than CPU
-time, after all.
+disk quickly, although not necessarily compactly. Disk is cheaper than CPU,
+after all.
 
 Our recommendation is that disk-based storage only be used with Interface
 Indexed SNMP OIDs. The module will work with other results but retrieval will
@@ -99,7 +99,7 @@ And then the C<value> will get written to a file:
 
 Here, C<$root> is set in the configuration (see below). The port name is
 munged to translate non-alphanumeric characters to a dot (so it's
-filesystem-safe on modern OSes). The C<$timestamp> is set when the file is
+filesystem-safe on common OSes). The C<$timestamp> is set when the file is
 created (if it's the first storage for this ip/leaf/port combination), and the
 C<$interval> is read from the C<yatg_updater> configuration as the SNMP
 polling interval.

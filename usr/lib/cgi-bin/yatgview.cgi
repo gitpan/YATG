@@ -95,7 +95,7 @@ __END__
 
 =head1 NAME
 
-YATG CGI - CGI to display graphs of YATG polled port traffic data
+yatgview.cgi - CGI to display graphs of YATG polled port traffic data
 
 =head1 IMPORTANT NOTE
 
@@ -178,6 +178,11 @@ used verbatim in the boilerplate HTML text and graph title.
 
 This must be the port on the device, as used by YATG to store the results,
 e.g. C<GigabitEthernet5/1> (but URI-escaped, of course).
+
+As a special case, if the C<port> CGI parameter is given more than once, then
+the data values for the two ports are summed together and a graph drawn of
+that. This might be handy if you load share over multiple links but want a
+single utilization graph.
 
 =item C<name>
 

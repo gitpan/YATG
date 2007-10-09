@@ -73,14 +73,14 @@ YATG::Retrieve::Disk - Retrieve a set of data stored by YATG::Store::Disk
 =head1 DESCRIPTION
 
 You can load this module to retrieve a set of data which has previously been
-stored by L<YATG::Store::Disk>. An implementation of this process is given in
-the CGI bundled with this distribution, which displays results of SNMP polls.
+stored by YATG::Store::Disk. An implementation of this process is given in the
+CGI bundled with this distribution, which displays results of SNMP polls.
 
 For more information on the data storage format, see L<YATG::Store::Disk>.
 
 =head1 USAGE
 
-There is one subroutine, C<retrieve> which takes seven parameters:
+There is one subroutine, C<retrieve()> which takes seven parameters:
 
 =over 4
 
@@ -122,9 +122,9 @@ the end point for retrieved results.
 
 =item C<step>
 
-In fact this parameter is optional. If not specified, the filename of the
-result set encodes the polling interval which will then be used for the
-returned results interval (i.e. one data point per C<step> seconds returned).
+This parameter is optional. If not specified, the filename of the result set
+encodes the polling interval which will then be used for the returned results
+interval (i.e. one data point per C<step> seconds returned).
 
 Alternatively you can pass a number of seconds in this parameter and the
 module will do its best to provide one data point per C<step> seconds in the

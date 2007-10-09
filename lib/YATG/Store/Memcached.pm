@@ -58,7 +58,7 @@ __END__
 
 =head1 NAME
 
-YATG::Store::Disk - Back-end module to store polled data to a Memcached
+YATG::Store::Memcached - Back-end module to store polled data to a Memcached
 
 =head1 DESCRIPTION
 
@@ -70,11 +70,16 @@ The module will die if it cannot connect to your memcached server, so see
 below for the configuration guidelines. Note that all example keys here use
 the namespace prefix of C<yatg:> although this is configurable.
 
-One data structure is passed in which represents a set of results for a set of
-polled OIDs on some devices.
+One data structure is passed in, which represents a set of results for a set of
+polled OIDs on some devices. It looks a bit like this:
 
-In your memcached server, the key C<yatg:yatg_devices> will contain an array
-reference containing all device IPs provided in the results data.
+ $results->{$device}->{$leaf}->{$port} = {value}
+
+In your memcached server, a few well-known keys store lists of polled devices
+and so on, to help you bootstrap to find stored results.
+
+The key C<yatg:yatg_devices> will contain an array reference containing all
+device IPs provided in the results data.
 
 Further, each key of the form C<yatg:ports_for:$device> will contain an array
 reference containing all ports polled on that device. The port name is not
@@ -86,10 +91,11 @@ following format:
 
  yatg:$device:$leaf:$port
 
-Note that the C<$leaf> is the SNMP leaf name and not the OID. Each value is
-stored with a TTL of the polling interval as gathered from the main
-C<yatg_updater> configuration. That key will be munged to remove whitespace,
-as that is not permitted in memcached keys.
+Note that the C<$leaf> is the SNMP leaf name and not the OID. That key will be
+munged to remove whitespace, as that is not permitted in memcached keys.
+
+All of the above values are stored with a TTL of the polling interval as
+gathered from the main C<yatg_updater> configuration.
 
 With all this information it is possible to write a script to find all the
 data stored in the memcache using the two lookup tables and then retrieving
@@ -100,10 +106,11 @@ this distribution, called C<check_interfaces>. It is a Nagios2 check script.
 
 In the main C<yatg_updater> configuration, you must provide details of the
 location of your memcached server. Follow the example (C<yatg.yml>) file in
-this distribution. Remember you can override the namespace used, like so:
+this distribution. Remember you can override the namespace used from the
+default of C<yatg:>, like so:
 
  cache_memcached:
-     namespace: 'my_space'
+     namespace: 'my_space:'
 
 =head1 SEE ALSO
 
