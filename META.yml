@@ -1,7 +1,7 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         YATG
-version:      1.0301
+version:      1.0302
 version_from: usr/bin/yatg_updater
 installdirs:  site
 requires:

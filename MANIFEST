@@ -1,6 +1,7 @@
 usr/lib/cgi-bin/yatggraph.cgi
 usr/lib/cgi-bin/yatgview.cgi
 usr/bin/yatg_updater
+examples/check_interfaces
 examples/yatg.yml
 examples/yatg_graph.pl
 examples/yatg.daemontools.run
