@@ -3,7 +3,7 @@
 use strict;
 use warnings FATAL => 'all';
 
-our $VERSION = '1.0302';
+our $VERSION = '1.0303';
 
 use YATG::SharedStorage;
 YATG::SharedStorage->factory(qw(cache results));
@@ -249,7 +249,7 @@ YATG - Fast SNMP data poller daemon, with storage and graphing
 
 =head1 VERSION
 
-This document refers to version 1.0302 of YATG
+This document refers to version 1.0303 of YATG
 
 =head1 DESCRIPTION
 
