@@ -30,9 +30,6 @@ my $graph_conf = Config::Any->load_files(
 my $width = "700";
 my $height = "290";
 
-my $wrap32 = 2**32;
-my $wrap64 = 2**64;
-
 my %p = Vars;
 map {s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg} values %p; # uri unescape
 
@@ -60,6 +57,9 @@ my %colour;
 sub normalize_data {
     my $leaf = shift;
     my %input = @_;
+    my $wrap32 = 2**32;
+    my $wrap64 = 2**64;
+
     my $xdata = [sort {$a <=> $b} keys %input];
     my $data  = [map {$input{$_}} @$xdata];
 
@@ -172,13 +172,13 @@ foreach my $leaf (keys %leaves) {
 
     my $layer =
         $c->addLineLayer($dataary->result, $colour{$leaf}, $leaves{$leaf});
-    $layer->setXData( ArrayMath->new($xdata)->add(62135600400)->result );
+    $layer->setXData( ArrayMath->new($xdata)->add(62135600400 - 3600)->result );
 }
 
 # fix unix epoch to perlchartdir epoch
 $c->xAxis->setDateScale(
-     62135600400 + $minx,
-     62135600400 + $maxx,
+     62135600400 - 3600 + $minx,
+     62135600400 - 3600 + $maxx,
      $major, $major / 3
 );
 

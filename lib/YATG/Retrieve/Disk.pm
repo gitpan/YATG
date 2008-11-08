@@ -15,7 +15,7 @@ sub retrieve {
     $port ||= 1;
     $port =~ s/[^A-Za-z0-9]/./g; # just in case, re-squash port chars
 
-    my @files = grep {m/\d{4}-\d\d-\d\d_\d\d-\d\d-\d\d,\d+$/}
+    my @files = grep {m/\d{4}-\d\d-\d\d_\d\d-\d\d-\d\dZ?,\d+$/}
                      glob("$root/$device/$leaf/$port/*");
     die "File not found at '$root/$device/$leaf/$port'\n"
         if scalar @files == 0;
@@ -30,10 +30,12 @@ sub retrieve {
         if !tied @store;
 
     $filename =~ s#$root/$device/$leaf/$port/##;
-    $filename =~ m/^(\d{4})-(\d\d)-(\d\d)_(\d\d)-(\d\d)-(\d\d),(\d+)$/;
+    $filename =~ m/^(\d{4})-(\d\d)-(\d\d)_(\d\d)-(\d\d)-(\d\d)(Z?),(\d+)$/;
 
-    my $base_time = timelocal($6,$5,$4,$3,$2-1,$1-1900);
-    my $interval  = $7;
+    my $base_time = $7 ?
+        timegm($6,$5,$4,$3,$2-1,$1-1900) :
+        timelocal($6,$5,$4,$3,$2-1,$1-1900);
+    my $interval  = $8;
     my $top_time  = $base_time + ($#store * $interval);
 
     $step ||= $interval;

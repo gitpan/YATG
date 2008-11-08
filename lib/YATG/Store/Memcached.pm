@@ -20,6 +20,7 @@ sub store {
     # results look like this:
     #   $results->{host}->{leaf}->{port} = {value}
     my $TTL = $config->{yatg}->{interval} || 300;
+    $TTL += (int (20 / 100 * $TTL)); # 20 p/c breathing space for splayed storage
 
     eval { $m->set('yatg_devices', [keys %$results], $TTL) }
         or warn "yatg: failed to store 'yatg_devices' to memcached\n";

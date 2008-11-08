@@ -22,7 +22,7 @@ sub store {
             foreach my $port (keys %data) {
                 (my $mport = $port) =~ s/[^A-Za-z0-9]/./g;
 
-                my @files = grep {m/\d{4}-\d\d-\d\d_\d\d-\d\d-\d\d,\d+$/}
+                my @files = grep {m/\d{4}-\d\d-\d\d_\d\d-\d\d-\d\dZ?,\d+$/}
                                  glob("$root/$device/$leaf/$mport/*");
     
                 my (@store, $filename, $offset);
@@ -32,22 +32,23 @@ sub store {
                     eval { mkdir "$root/$device/$leaf/$mport" };
     
                     my ($sec,$min,$hour,$mday,
-                            $mon,$year,$wday,$yday,$isdst) =
-                                                        localtime($stamp);
+                            $mon,$year,$wday,$yday,$isdst) = gmtime($stamp);
                     $filename = sprintf "%04d-%02d-%02d_%02d-%02d-%02d",
                         ($year+1900), ($mon+1), $mday, $hour, $min, $sec;
    
-                    $filename .= ',' . $config->{yatg}->{interval};
+                    $filename .= 'Z,' . $config->{yatg}->{interval};
                     $offset = 0;
                 }   
                 else {
                     $filename = (sort @files)[-1];
                     $filename =~ s#$root/$device/$leaf/$mport/##;
                     $filename
-                 =~ m/^(\d{4})-(\d\d)-(\d\d)_(\d\d)-(\d\d)-(\d\d),(\d+)$/;
+                 =~ m/^(\d{4})-(\d\d)-(\d\d)_(\d\d)-(\d\d)-(\d\d)(Z?),(\d+)$/;
     
-                    my $base_time = timelocal($6,$5,$4,$3,$2-1,$1-1900);
-                    my $interval  = $7;
+                    my $base_time = $7 ?
+                        timegm($6,$5,$4,$3,$2-1,$1-1900) :
+                        timelocal($6,$5,$4,$3,$2-1,$1-1900);
+                    my $interval  = $8;
 
                     $offset = (($stamp - $base_time) / $interval);
                 }   

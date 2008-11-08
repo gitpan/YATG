@@ -46,23 +46,29 @@ sub snmp_callback {
         my $store = $cache->{oids}->{$leaf}->{store};
         next if !defined $store;
 
+        # only a hint, as some INTEGERs are not enumerated types
         my $enum = SNMP::getType($leaf) eq 'INTEGER' ? 1 : 0;
+        my $enum_val = undef;
 
         if ($cache->{oids}->{$leaf}->{indexer} eq 'iid') {
             foreach my $iid (keys %{$data->{$oid}}) {
                 next unless $stash->{$iid}->{is_interesting};
+                my $enum_val = SNMP::mapEnum($leaf, $data->{$oid}->{$iid})
+                    if $enum;
 
                 $results->{$store}->{$host}->{$leaf}
-                    ->{$data->{$descr}->{$iid}} = $enum
-                        ? SNMP::mapEnum($leaf, $data->{$oid}->{$iid})
-                        : $data->{$oid}->{$iid};
+                    ->{$data->{$descr}->{$iid}} = ($enum and defined $enum_val)
+                        ? $enum_val : $data->{$oid}->{$iid};
             }
         }
         else {
             foreach my $id (keys %{$data->{$oid}}) {
+                my $enum_val = SNMP::mapEnum($leaf, $data->{$oid}->{$id})
+                    if $enum;
+
                 $results->{$store}->{$host}->{$leaf}->{$id}
-                    = $enum ? SNMP::mapEnum($leaf, $data->{$oid}->{$id})
-                            : $data->{$oid}->{$id};
+                    = ($enum and defined $enum_val)
+                        ? $enum_val : $data->{$oid}->{$id};
             }
         }
     }

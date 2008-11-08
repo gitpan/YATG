@@ -1,20 +1,39 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         YATG
-version:      1.0303
-version_from: usr/bin/yatg_updater
-installdirs:  site
-requires:
-    Class::Data::Inheritable:      0
-    DBI:                           0
-    Log::Dispatch::Syslog:         0
-    Module::MultiConf:             0
-    Net::Netmask:                  0
-    Readonly:                      0
-    Regexp::Common:                0
-    SNMP:                          0
-    SNMP::Effective:               1.04
-    Time::HiRes:                   0
-
+---
+abstract: 'Fast SNMP data poller daemon, with storage and graphing'
+author:
+  - 'Oliver Gorwits C<< <oliver.gorwits@oucs.ox.ac.uk> >>'
+build_requires:
+  Test::More: 0
+  Test::Pod: 0
+  Test::Pod::Coverage: 0
 distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.30_01
+generated_by: 'Module::Install version 0.77'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: YATG
+no_index:
+  directory:
+    - inc
+    - t
+    - examples
+recommends:
+  Cache::Memcached: 0
+  RPC::Serialized::Handler: 0
+  Tie::File::FixedRecLen::Store: 0
+requires:
+  Class::Data::Inheritable: 0
+  DBI: 0
+  Log::Dispatch::Syslog: 0
+  Module::MultiConf: 0
+  Net::Netmask: 0
+  Readonly: 0
+  Regexp::Common: 0
+  SNMP: 0
+  SNMP::Effective: 1.04
+  Time::HiRes: 0
+  perl: 5.8.1
+resources:
+  license: http://dev.perl.org/licenses/
+version: 2.0001
