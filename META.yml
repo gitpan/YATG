@@ -7,7 +7,7 @@ build_requires:
   Test::Pod: 0
   Test::Pod::Coverage: 0
 distribution_type: module
-generated_by: 'Module::Install version 0.77'
+generated_by: 'Module::Install version 0.76'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -35,5 +35,8 @@ requires:
   Time::HiRes: 0
   perl: 5.8.1
 resources:
+  IRC: irc://irc.perl.org/#miltonkeynes.pm
+  MailingList: https://lists.sourceforge.net/lists/listinfo/yatg-users
   license: http://dev.perl.org/licenses/
-version: 2.0001
+  repository: http://yatg.git.sourceforge.net/
+version: 3.01

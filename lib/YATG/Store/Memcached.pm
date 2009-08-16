@@ -21,6 +21,7 @@ sub store {
     #   $results->{host}->{leaf}->{port} = {value}
     my $TTL = $config->{yatg}->{interval} || 300;
     $TTL += (int (20 / 100 * $TTL)); # 20 p/c breathing space for splayed storage
+    # $TTL = 2 * $TTL; # see if this helps nagios
 
     eval { $m->set('yatg_devices', [keys %$results], $TTL) }
         or warn "yatg: failed to store 'yatg_devices' to memcached\n";
@@ -127,18 +128,9 @@ Oliver Gorwits C<< <oliver.gorwits@oucs.ox.ac.uk> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (c) The University of Oxford 2007. All Rights Reserved.
+Copyright (c) The University of Oxford 2007.
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published by the
-Free Software Foundation.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
-St, Fifth Floor, Boston, MA 02110-1301 USA
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
 
 =cut

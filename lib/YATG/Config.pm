@@ -41,6 +41,14 @@ __PACKAGE__->Validate({
         callbacks => { type => CODEREF | ARRAYREF,
                             default => sub { return "$_[1]\n" } },
     },
+    nsca => {
+        nsca_server   => { type => SCALAR },
+        send_nsca_cmd => { type => SCALAR, optional => 1 },
+        ignore_ports  => { type => SCALAR, default => '^(?:Vlan|Po)\d+$' },
+        ignore_descr  => { type => SCALAR, default => '(?:SPAN)' },
+        config_file   => { type => SCALAR, default => '/etc/send_nsca.cfg' },
+        service_name  => { type => SCALAR, default => 'Interfaces Status' },
+    },
 });
 
 1;
@@ -80,8 +88,7 @@ results. Some of the magic words are mutually exclusive.
 =head3 Storage
 
 These are the storage methods for the results, and an OID without one of these
-magic words will be ignored. You should only specify one of these for each
-leaf name (as in the example above).
+magic words will be ignored. Multiple storage methods can be given for any OID.
 
 =over 4
 
@@ -90,26 +97,39 @@ leaf name (as in the example above).
 This means to use the L<Data::Dumper> to print results.  It's good for
 testing.
 
+See L<YATG::Store::STDOUT>.
+
 =item C<disk>
 
 Disk storage means to create a file for each OID of each port on each device.
 It is very fast and efficient by design, and most useful for long-term
-historical data such as port traffic counters. For more information on disk
-storage, see L<YATG::Store::Disk>.
+historical data such as port traffic counters.
+
+See L<YATG::Store::Disk>.
 
 =item C<memcached>
 
 If you don't need data history, then this module is a better alternative than
 disk-based storage, because of its speed. A memcached server is required of
-course. For more information see L<YATG::Store::Memcached>.
+course.
+
+See L<YATG::Store::Memcached>.
 
 =item C<rpc>
 
 This is merely an extension to the Disk storage module which allows
 C<yatg_updater> to use disk on another machine. You can think of it as an
 RPC-based alternative to network mounting a filesystem. On the remote host,
-the Disk module is then used for storage. See L<YATG::Store::RPC> for more
-details.
+the Disk module is then used for storage.
+
+See L<YATG::Store::RPC>.
+
+=item C<nsca>
+
+If you wish to submit data to Nagios as a passive service check result, then
+this method can be configured to contact an NSCA daemon on your Nagios server.
+
+See L<YATG::Store::NSCA>.
 
 =back
 
@@ -305,18 +325,9 @@ Oliver Gorwits C<< <oliver.gorwits@oucs.ox.ac.uk> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (c) The University of Oxford 2007. All Rights Reserved.
+Copyright (c) The University of Oxford 2007.
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published by the
-Free Software Foundation.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
-St, Fifth Floor, Boston, MA 02110-1301 USA
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
 
 =cut
