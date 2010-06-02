@@ -39,4 +39,4 @@ resources:
   MailingList: https://lists.sourceforge.net/lists/listinfo/yatg-users
   license: http://dev.perl.org/licenses/
   repository: http://yatg.git.sourceforge.net/
-version: 3.01
+version: 3.02
