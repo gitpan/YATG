@@ -1,6 +1,6 @@
 package YATG::Config;
 {
-  $YATG::Config::VERSION = '5.130510_001';
+  $YATG::Config::VERSION = '5.130511';
 }
 
 use strict;
@@ -73,7 +73,7 @@ YATG::Config - Configuration management for YATG
 
 =head1 VERSION
 
-version 5.130510_001
+version 5.130511
 
 =head1 REQUIRED CONFIGURATION
 

@@ -52,7 +52,7 @@
          }
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://rt.cpan.org/Public/Dist/Display.html?Name=YATG"
@@ -64,6 +64,6 @@
          "web" : "https://github.com/ollyg/YATG"
       }
    },
-   "version" : "5.130510_001"
+   "version" : "5.130511"
 }
 

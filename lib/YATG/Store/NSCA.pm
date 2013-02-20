@@ -1,6 +1,6 @@
 package YATG::Store::NSCA;
 {
-  $YATG::Store::NSCA::VERSION = '5.130510_001';
+  $YATG::Store::NSCA::VERSION = '5.130511';
 }
 
 use strict;
@@ -104,7 +104,7 @@ sub store {
               and $ifAlias =~ m/$ignore_discard_descr/) ? 1 : 0;
 
             if (exists $status->{$device}->{$port}->{ifOperStatus}) {
-                if (not $skip_oper and $ifOperStatus ne 'up') {
+                if (not $skip_oper and $ifOperStatus !~ m/^(?:up|dormant)/) {
                     $status_report ||= 'NOT OK - DOWN: ';
                     $status_report .= "$port($ifAlias) ";
                     ++$tot_down;
@@ -114,7 +114,7 @@ sub store {
                 $ifOperStatusCache->{$device}->{$port} = $ifOperStatus;
                 ++$tot_oper;
 
-                if ($ifOperStatus ne 'up') {
+                if ($ifOperStatus !~ m/^(?:up|dormant)/) {
                     # can skip rest of this port's checks and reports
                     $ifInErrorsCache->{$device}->{$port} = $ifInErrors
                       if exists $status->{$device}->{$port}->{ifInErrors};
@@ -230,7 +230,7 @@ YATG::Store::NSCA - Back-end module to send polled data to a Nagios service
 
 =head1 VERSION
 
-version 5.130510_001
+version 5.130511
 
 =head1 DESCRIPTION
 

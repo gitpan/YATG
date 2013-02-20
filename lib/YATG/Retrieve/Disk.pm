@@ -1,6 +1,6 @@
 package YATG::Retrieve::Disk;
 {
-  $YATG::Retrieve::Disk::VERSION = '5.130510_001';
+  $YATG::Retrieve::Disk::VERSION = '5.130511';
 }
 
 use strict;
@@ -81,7 +81,7 @@ YATG::Retrieve::Disk - Retrieve a set of data stored by YATG::Store::Disk
 
 =head1 VERSION
 
-version 5.130510_001
+version 5.130511
 
 =head1 DESCRIPTION
 
