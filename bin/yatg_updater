@@ -6,6 +6,7 @@ use warnings FATAL => 'all';
 use YATG::SharedStorage;
 YATG::SharedStorage->factory(qw(cache results));
 
+use YAML::XS;
 use YATG::Config;
 use YATG::Callback;
 
@@ -20,7 +21,10 @@ die "must not use SNMP::Effective 1.0\n"
     if $SNMP::Effective::VERSION == 1.0;
 use Net::Netmask;
 use Regexp::Common 'net';
+
+use Sys::Syslog 0.25;
 use Log::Dispatch::Syslog;
+use Data::Printer;
 
 use POSIX;
 use FindBin;
@@ -28,10 +32,13 @@ use File::Basename;
 use File::Spec::Functions;
 
 my $config = YATG::Config->parse(@ARGV) || die "failed to load config\n";
-Readonly my $INTERVAL => $config->yatg->{'interval'};
+Readonly my $INTERVAL => $ENV{YATG_INTERVAL} || $config->yatg->{'interval'};
 Readonly my $POLLERS  => $config->yatg->{'max_pollers'};
 Readonly my $TIMEOUT  => $config->yatg->{'timeout'};
 Readonly my $DEBUG    => $ENV{YATG_DEBUG} || $config->yatg->{'debug'};
+$ENV{YATG_DEBUG} = $DEBUG; # copy from config for use in backends
+
+# p $config if $ENV{YATG_DEBUG};
 
 my $logger = Log::Dispatch::Syslog->new($config->log_dispatch_syslog);
 sub to_log {
@@ -61,11 +68,6 @@ my $cache   = YATG::SharedStorage->cache({
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# make the daemon cross-platform, so exec always calls the script
-# itself with the right path, no matter how the script was invoked.
-Readonly my $script => File::Basename::basename($0);
-Readonly my $SELF => catfile $FindBin::Bin, $script;
-
 # POSIX unmasks the sigprocmask properly
 my $sigset = POSIX::SigSet->new;
 my $action = POSIX::SigAction->new(
@@ -73,10 +75,11 @@ my $action = POSIX::SigAction->new(
 );
 POSIX::sigaction(&POSIX::SIGHUP, $action);
 
+chomp(my $command = (qx/ps -o args $$/)[1]);
 sub hup_handler {
     to_log("SIGHUP received, restarting...\n");
-    exec ($SELF, @ARGV) or die "Couldn't restart $0: $!\n";
-} # thanks go to perlipc man page for this
+    exec ($command) or die "Couldn't restart $0: $!\n";
+}
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # rebuild device cache (also on sigHUP)
@@ -90,6 +93,38 @@ my $dbh = DBI->connect(
 
 $cache->{devices} = $dbh->selectcol_arrayref(
     $config->yatg->{'dbi_ip_query'});
+
+# build resolver table for host names for device IPs
+if ($config->yatg->{'dbi_host_query'}) {
+    $cache->{'host_for'} = { map {$_->{ip} => $_->{name}} @{
+        $dbh->selectall_arrayref(
+          $config->yatg->{'dbi_host_query'},
+          { Slice => {} },
+        )}
+    };
+}
+
+# p $cache->{host_for} if exists $cache->{host_for};
+
+# build filter list of interfaces for ifIndex items for each device
+if ($config->yatg->{'dbi_interfaces_query'}) {
+    foreach my $ip (@{$cache->{devices}}) {
+        $cache->{'interfaces_for'}->{$ip} = {
+            map { $_ => 1 } @{
+              $dbh->selectcol_arrayref(
+                $config->yatg->{'dbi_interfaces_query'},
+                {}, $ip)
+            }
+        };
+
+        # a device with no interfaces means allow all interfaces
+        delete $cache->{'interfaces_for'}->{$ip}
+          if 0 == scalar keys %{ $cache->{'interfaces_for'}->{$ip} };
+    }
+}
+
+# p $cache->{'interfaces_for'} if exists $cache->{'interfaces_for'};
+
 $dbh->disconnect;
 
 # work out what OIDs to grab, and how
@@ -211,7 +246,7 @@ else {
     }
 }
 
-to_log("Cache rebuild took ". (time - $^T) ." seconds.\n");
+to_log(sprintf "Cache rebuild took %.3f seconds.\n", (time - $^T));
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -253,7 +288,7 @@ while (1) {
 
     my $exec = time;
     $se->execute;
-    to_log("Execute run took ". (time - $exec) ." seconds.\n");
+    to_log(sprintf "Execute run took %.3f seconds.\n", (time - $exec));
 
     my $update = time;
     my $stamp = floor($update - ($update % $INTERVAL));
@@ -265,7 +300,7 @@ while (1) {
             ({%$config}, $stamp, $results->{$mod});
     }
 
-    to_log("Remote update took ". (time - $update) ." seconds.\n");
+    to_log(sprintf "Remote update took %.3f seconds.\n", (time - $update));
 
     $results = YATG::SharedStorage->results({});
     last if $ENV{YATG_SINGLE_RUN};
@@ -274,8 +309,8 @@ while (1) {
 # ABSTRACT: Fast SNMP data poller daemon, with storage and graphing
 # PODNAME: YATG
 
-
 __END__
+
 =pod
 
 =head1 NAME
@@ -284,14 +319,14 @@ YATG - Fast SNMP data poller daemon, with storage and graphing
 
 =head1 VERSION
 
-version 4.112532
+version 5.130510_001
 
 =head1 DESCRIPTION
 
-YATG is an application which is intended to be run persistently. At intervals
-it will wake up and poll network devices for SNMP data, and then store or
-print that data. In this distribution are also included examples for
-presenting simple CGI web pages with graphs.
+YATG is a daemon (background process) which at intervals wakes up and polls
+network devices for SNMP data, and then stores or prints that data. In this
+distribution are also included examples for presenting simple CGI web pages
+with graphs.
 
 YATG is flexible, efficient and powerful. It can poll a large number of
 devices with thousands of ports in just a few seconds. The configuration is
@@ -335,7 +370,8 @@ smart wrapper for the L<SNMP::Effective> module.
 =item YATG::Store family of modules
 
 These are modules which take the SNMP poll results and store them to either
-local Disk, a Memcached server, or the disk on a remote networked server.
+local Disk, a Memcached server, the disk on a remote networked server, or
+Nagios via NSCA.
 
 =item YATG::Retrieve family of modules
 
@@ -370,6 +406,9 @@ L<YATG::Config>.
 Alongside that, there are examples of all the files you should need to
 install, in the C<examples/> folder of this distribution.
 
+Each of the Store and Retrieve modules might have additional Perl module
+dependencies (i.e. from CPAN) - see the relevant docs for more details.
+
 =head1 LOGGING and TESTING
 
 This module uses "Log::Dispatch::Syslog" for logging, and by default will log
@@ -383,6 +422,9 @@ To run the poller just once, set the C<YATG_SINGLE_RUN> environment variable
 to a true value. This is great for development. It makes C<yatg_updater> load
 its configuration, generate the device hints cache, sleep and then run just
 one poll cycle before exiting.
+
+To override the interval between polling runs, set the C<YATG_INTERVAL>
+environment variable to a number of seconds.
 
 For example:
 
@@ -408,10 +450,9 @@ Oliver Gorwits <oliver@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by University of Oxford.
+This software is copyright (c) 2013 by University of Oxford.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

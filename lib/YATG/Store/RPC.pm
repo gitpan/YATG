@@ -1,6 +1,6 @@
 package YATG::Store::RPC;
 {
-  $YATG::Store::RPC::VERSION = '4.112532';
+  $YATG::Store::RPC::VERSION = '5.130510_001';
 }
 
 use strict;
@@ -31,8 +31,8 @@ sub store {
 
 # ABSTRACT: Back-end module to store polled data over the network
 
-
 __END__
+
 =pod
 
 =head1 NAME
@@ -41,7 +41,7 @@ YATG::Store::RPC - Back-end module to store polled data over the network
 
 =head1 VERSION
 
-version 4.112532
+version 5.130510_001
 
 =head1 DESCRIPTION
 
@@ -88,10 +88,9 @@ Oliver Gorwits <oliver@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by University of Oxford.
+This software is copyright (c) 2013 by University of Oxford.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
