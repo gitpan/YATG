@@ -1,6 +1,6 @@
 package YATG::Config;
 {
-  $YATG::Config::VERSION = '5.130511';
+  $YATG::Config::VERSION = '5.130520';
 }
 
 use strict;
@@ -73,7 +73,7 @@ YATG::Config - Configuration management for YATG
 
 =head1 VERSION
 
-version 5.130511
+version 5.130520
 
 =head1 REQUIRED CONFIGURATION
 
@@ -259,7 +259,7 @@ Here is an example in YAML:
 
 =head1 OPTIONAL CONFIGURATION
 
-There are some additional, optional keys for the C<oids> section:
+There are some additional, optional keys for the C<yatg> section:
 
 =over 4
 

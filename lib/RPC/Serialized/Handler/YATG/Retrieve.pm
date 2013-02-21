@@ -1,6 +1,6 @@
 package RPC::Serialized::Handler::YATG::Retrieve;
 {
-  $RPC::Serialized::Handler::YATG::Retrieve::VERSION = '5.130511';
+  $RPC::Serialized::Handler::YATG::Retrieve::VERSION = '5.130520';
 }
 
 use strict;
@@ -28,7 +28,7 @@ RPC::Serialized::Handler::YATG::Retrieve - RPC handler for YATG::Retrieve::Disk
 
 =head1 VERSION
 
-version 5.130511
+version 5.130520
 
 =head1 DESCRIPTION
 

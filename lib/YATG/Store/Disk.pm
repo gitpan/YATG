@@ -1,6 +1,6 @@
 package YATG::Store::Disk;
 {
-  $YATG::Store::Disk::VERSION = '5.130511';
+  $YATG::Store::Disk::VERSION = '5.130520';
 }
 
 use strict;
@@ -84,7 +84,7 @@ YATG::Store::Disk - Back-end module to store polled data to disk
 
 =head1 VERSION
 
-version 5.130511
+version 5.130520
 
 =head1 DESCRIPTION
 
