@@ -1,6 +1,6 @@
 package YATG::Config;
 {
-  $YATG::Config::VERSION = '5.130520';
+  $YATG::Config::VERSION = '5.130600';
 }
 
 use strict;
@@ -28,6 +28,7 @@ __PACKAGE__->Validate({
             /usr/share/netdisco/mibs/net-snmp
         )] },
         disk_root    => { type => SCALAR, default => '/var/lib/yatg' },
+        newhosts_watch => { type => SCALAR, optional => 1 },
     },
     cache_memcached => {
         servers   => { type => ARRAYREF, optional => 1 },
@@ -73,7 +74,7 @@ YATG::Config - Configuration management for YATG
 
 =head1 VERSION
 
-version 5.130520
+version 5.130600
 
 =head1 REQUIRED CONFIGURATION
 
@@ -282,6 +283,19 @@ lightweight wrapper to the C<SNMP> perl libraries. C<SNMP::Effective> polls
 asynchronously and you can set the maximum number of polls which are happening
 at once using this key. The default is 20 which is reasonably for any modern
 computer.
+
+=item C<newhosts_watch>
+
+As YATG is a long-running process, you might occasionally want to update its
+list of hosts to monitor. Of course you can send a C<SIGHUP> and have YATG
+reload entirely, but this can be slow because of the re-checking of SNMP
+communities, and also requires an external process to send the signal.
+
+If the YATG config has not changed, but you wish to update the list of
+monitored hosts, then set C<newhosts_watch> to the name of a file. The
+modification time of the file is watched and if it updates then YATG retrieves
+a new set of hosts (and host names and interface filters, if configured), on
+the next polling run.
 
 =item C<debug>
 

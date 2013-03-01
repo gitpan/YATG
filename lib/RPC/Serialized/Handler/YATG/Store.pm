@@ -1,6 +1,6 @@
 package RPC::Serialized::Handler::YATG::Store;
 {
-  $RPC::Serialized::Handler::YATG::Store::VERSION = '5.130520';
+  $RPC::Serialized::Handler::YATG::Store::VERSION = '5.130600';
 }
 
 use strict;
@@ -28,7 +28,7 @@ RPC::Serialized::Handler::YATG::Store - RPC handler for YATG::Store::Disk
 
 =head1 VERSION
 
-version 5.130520
+version 5.130600
 
 =head1 DESCRIPTION
 

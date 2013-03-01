@@ -30,6 +30,7 @@ my %WriteMakefileArgs = (
     "Exporter" => 0,
     "File::Basename" => 0,
     "File::Spec::Functions" => 0,
+    "File::stat" => 0,
     "FindBin" => 0,
     "Log::Dispatch::Syslog" => 0,
     "Module::MultiConf" => "0.0301",
@@ -48,7 +49,7 @@ my %WriteMakefileArgs = (
     "vars" => 0,
     "warnings" => 0
   },
-  "VERSION" => "5.130520",
+  "VERSION" => "5.130600",
   "test" => {
     "TESTS" => "t/*.t"
   }
