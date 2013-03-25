@@ -1,6 +1,6 @@
 package YATG::Store::STDOUT;
 {
-  $YATG::Store::STDOUT::VERSION = '5.130600';
+  $YATG::Store::STDOUT::VERSION = '5.130840';
 }
 
 use strict;

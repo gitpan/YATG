@@ -1,6 +1,6 @@
 package YATG::Config;
 {
-  $YATG::Config::VERSION = '5.130600';
+  $YATG::Config::VERSION = '5.130840';
 }
 
 use strict;
@@ -49,6 +49,7 @@ __PACKAGE__->Validate({
     },
     nsca => {
         nsca_server    => { type => SCALAR, optional => 1 },
+        nsca_port      => { type => SCALAR, default => '5667' },
         send_nsca_cmd  => { type => SCALAR, default => '/usr/bin/send_nsca' },
         config_file    => { type => SCALAR, default => '/etc/send_nsca.cfg' },
         ignore_ports   => { type => SCALAR, default => '^(?:Vlan|Po)\d+$' },
@@ -64,8 +65,8 @@ __PACKAGE__->Validate({
 
 # ABSTRACT: Configuration management for YATG
 
-__END__
 
+__END__
 =pod
 
 =head1 NAME
@@ -74,7 +75,7 @@ YATG::Config - Configuration management for YATG
 
 =head1 VERSION
 
-version 5.130600
+version 5.130840
 
 =head1 REQUIRED CONFIGURATION
 
@@ -361,3 +362,4 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
+

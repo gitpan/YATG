@@ -1,6 +1,6 @@
 package YATG::Store::Memcached;
 {
-  $YATG::Store::Memcached::VERSION = '5.130600';
+  $YATG::Store::Memcached::VERSION = '5.130840';
 }
 
 use strict;
@@ -61,8 +61,8 @@ sub store {
 
 # ABSTRACT: Back-end module to store polled data to a Memcached
 
-__END__
 
+__END__
 =pod
 
 =head1 NAME
@@ -71,7 +71,7 @@ YATG::Store::Memcached - Back-end module to store polled data to a Memcached
 
 =head1 VERSION
 
-version 5.130600
+version 5.130840
 
 =head1 DESCRIPTION
 
@@ -157,3 +157,4 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
+
