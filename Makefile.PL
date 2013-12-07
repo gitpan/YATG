@@ -19,6 +19,7 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "YATG",
   "EXE_FILES" => [
+    "bin/yatg-trim",
     "bin/yatg_updater"
   ],
   "LICENSE" => "perl",
@@ -29,9 +30,12 @@ my %WriteMakefileArgs = (
     "Data::Printer" => 0,
     "Exporter" => 0,
     "File::Basename" => 0,
+    "File::Copy" => 0,
     "File::Spec::Functions" => 0,
+    "File::Temp" => 0,
     "File::stat" => 0,
     "FindBin" => 0,
+    "Lingua::EN::Inflect" => 0,
     "Log::Dispatch::Syslog" => 0,
     "Module::MultiConf" => "0.0301",
     "Net::Netmask" => 0,
@@ -40,6 +44,7 @@ my %WriteMakefileArgs = (
     "Regexp::Common" => 0,
     "SNMP" => 0,
     "SNMP::Effective" => 0,
+    "Scriptalicious" => 0,
     "Symbol" => 0,
     "Sys::Syslog" => "0.25",
     "Time::HiRes" => 0,
@@ -49,7 +54,7 @@ my %WriteMakefileArgs = (
     "vars" => 0,
     "warnings" => 0
   },
-  "VERSION" => "5.130840",
+  "VERSION" => "5.133410",
   "test" => {
     "TESTS" => "t/*.t"
   }
